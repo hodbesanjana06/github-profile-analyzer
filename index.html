@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub Finder</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .main-title {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            color: #0f6113;
+            letter-spacing: 1px;
+        }
+        body {
+            background: #eaeaea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial;
+        }
+
+        .card-container {
+            background: #6fbf73;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .profile-card {
+            background: #fff;
+            display: flex;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 400px;
+        }
+
+        .left {
+            width: 50%;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .left img {
+            width: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .left h5 {
+            margin: 5px 0;
+        }
+
+        .btn-custom {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            border-radius: 8px;
+        }
+
+        .right {
+            width: 50%;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .right div {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .right div:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+<h2 class="main-title text-center">GitHub Profile Finder</h2>
+<div class="card-container">
+
+    <!-- Search -->
+    <input type="text" id="username" class="form-control mb-3" placeholder="Enter username">
+    <button class="btn btn-dark w-100 mb-3" onclick="getProfile()">Search</button>
+
+    <!-- Card -->
+    <div id="profile"></div>
+
+</div>
+
+<script src="index.js"></script>
+
+</body>
+</html>
