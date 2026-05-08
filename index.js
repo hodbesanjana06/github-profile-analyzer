@@ -1,62 +1,110 @@
-async function getProfile() {
+
+let globalData = {};
+let globalLang = "";
+let globalProjects = [];
+
+async function getProfile(){
 
     let username = document.getElementById("username").value;
 
-    const url = `https://api.github.com/users/${username}`;
+    let error = document.getElementById("error");
+    let profile = document.getElementById("profile");
+    let btnBox = document.getElementById("resumeBtnBox");
 
-    try {
-        let response = await fetch(url);
-        let data = await response.json();
-        console.log(data);
-        
-        document.getElementById("profile").innerHTML = `
-        
-        <div class="profile-card">
-            
-            <!-- LEFT -->
-            <div class="left">
-                <img src="${data.avatar_url}">
-                <h5>${data.name || "No Name"}</h5>
-                <p>@${data.login}</p>
+    error.classList.add("d-none");
+    profile.innerHTML = "";
+    btnBox.innerHTML = "";
 
-                <p style="font-size:12px; color:gray;">
+    if(!username){
+        error.classList.remove("d-none");
+        error.innerHTML = "Enter username";
+        return;
+    }
+
+    try{
+
+        let res = await fetch(`https://api.github.com/users/${username}`);
+        let data = await res.json();
+
+        if(data.message === "Not Found"){
+            error.classList.remove("d-none");
+            error.innerHTML = "User not found";
+            return;
+        }
+
+        let repoRes = await fetch(`https://api.github.com/users/${username}/repos`);
+        let repos = await repoRes.json();
+
+        let count = {};
+
+        repos.forEach(r=>{
+            if(r.language){
+                count[r.language] = (count[r.language]||0)+1;
+            }
+        });
+
+        globalLang =
+            Object.keys(count).sort((a,b)=>count[b]-count[a])[0] || "N/A";
+
+        globalProjects = repos.slice(0,6); // ✅ FIXED (full repo objects)
+        globalData = data;
+
+        profile.innerHTML = `
+
+        <div class="grid">
+
+            <div class="box">
+
+                <div class="profile">
+
+                    <img src="${data.avatar_url}">
+
+                    <div>
+                        <h5 class="mb-0">${data.name || data.login}</h5>
+                        <small>@${data.login}</small>
+
+                        <br>
+
+                        <a class="view-btn"
+                           href="${data.html_url}"
+                           target="_blank">
+                           View Profile
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <p class="mt-3 mb-0">
                     ${data.bio || "No bio available"}
                 </p>
 
-                <a href="${data.html_url}" target="_blank" class="btn btn-success btn-sm btn-custom">
-                    View Profile
-                </a>
             </div>
 
-            <!-- RIGHT -->
-            <div class="right">
+            <div class="box">
 
-                <div>
-                    <h6>${data.followers}</h6>
-                    <small>Followers</small>
+                <div class="stats">
+
+                    <div>
+                        <h4>${data.followers}</h4>
+                        <small>Followers</small>
+                    </div>
+
+                    <div>
+                        <h4>${data.public_repos}</h4>
+                        <small>Repos</small>
+                    </div>
+
+                    <div>
+                        <h4>${data.following}</h4>
+                        <small>Following</small>
+                    </div>
+
                 </div>
 
-                <div>
-                    <h6>${data.public_repos}</h6>
-                    <small>Repositories</small>
-                </div>
+                <hr>
 
-                <div>
-                    <h6>${data.following}</h6>
-                    <small>Following</small>
-                </div>
-
-                <div>
-                    <small><b>Email:</b> ${data.email || "Not public"}</small>
-                </div>
-
-                <div>
-                    <small><b>Location:</b> ${data.location || "Not available"}</small>
-                </div>
-
-                <div>
-                    <small><b>Joined:</b> ${new Date(data.created_at).toLocaleDateString()}</small>
-                </div>
+                <p><b>Most Active Language:</b> ${globalLang}</p>
 
             </div>
 
@@ -64,7 +112,109 @@ async function getProfile() {
 
         `;
 
-    } catch (error) {
-        console.log("Error:", error);
+        btnBox.innerHTML = `
+            <button class="btn-theme w-100 mt-3"
+                onclick="generateResume()">
+                Generate AI Resume
+            </button>
+        `;
+
+    }catch(err){
+        error.classList.remove("d-none");
+        error.innerHTML = "Something went wrong";
     }
+}
+
+
+// RESUME
+function generateResume(){
+
+    let d = globalData;
+
+    let projects = globalProjects.map(r=>`
+        <li>
+            <a href="${r.html_url}" target="_blank" style="color:#4f8cff; text-decoration:none;">
+                ${r.name}
+            </a>
+        </li>
+    `).join("");
+
+    let level =
+        d.public_repos > 20 ? "Advanced Developer"
+        : d.public_repos > 10 ? "Intermediate Developer"
+        : "Beginner Developer";
+
+    document.getElementById("resumeBtnBox").innerHTML += `
+
+    <div class="resume" id="resume">
+
+        <div style="text-align:center; margin-bottom:15px;">
+
+            <h3>${d.name || "Name Not Available"}</h3>
+
+            <small>@${d.login}</small>
+
+        </div>
+
+        <!-- ✅ IMPROVED RESUME SUMMARY -->
+        <p>
+            ${d.name || d.login} is a ${level.toLowerCase()} specializing in
+            <b>${globalLang}</b>. This profile was automatically generated by analyzing
+            GitHub activity, repositories, and programming language usage to build an
+            AI-style developer resume.
+        </p>
+
+        <div class="resume-grid">
+
+            <div class="resume-section">
+                <b>Username</b><br>${d.login}
+            </div>
+
+            <div class="resume-section">
+                <b>Level</b><br>${level}
+            </div>
+
+            <div class="resume-section">
+                <b>Followers</b><br>${d.followers}
+            </div>
+
+            <div class="resume-section">
+                <b>Repos</b><br>${d.public_repos}
+            </div>
+
+            <div class="resume-section">
+                <b>Main Language</b><br>${globalLang}
+            </div>
+
+            <div class="resume-section">
+                <b>Portfolio Strength</b><br>
+                ${
+                    d.public_repos > 30 ? "Strong"
+                    : d.public_repos > 15 ? "Good"
+                    : "Growing"
+                }
+            </div>
+
+        </div>
+
+        <hr>
+
+        <!-- ✅ IMPROVED PROJECT DESCRIPTION -->
+        <b>Projects</b>
+        <p style="margin-top:5px; font-size:14px; color:#cbd5e1;">
+            These projects are automatically fetched from GitHub repositories and represent
+            real development activity, showcasing coding consistency, project diversity,
+            and technical experience.
+        </p>
+
+        <ul>${projects}</ul>
+
+        <button onclick="window.print()"
+            class="btn-theme w-100 mt-3">
+            Export Resume
+        </button>
+
+    </div>
+
+    `;
 }

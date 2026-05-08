@@ -1,98 +1,229 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>GitHub Finder</title>
+<meta charset="UTF-8">
+<title></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        .main-title {
-            position: absolute;
-            top: 20px;
-            width: 100%;
-            text-align: center;
-            font-weight: bold;
-            color: #0f6113;
-            letter-spacing: 1px;
-        }
-        body {
-            background: #eaeaea;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: Arial;
-        }
+<style>
 
-        .card-container {
-            background: #6fbf73;
-            padding: 30px;
-            border-radius: 10px;
-        }
+body{
+    margin:0;
+    font-family:'Segoe UI', sans-serif;
+    background:#0b1220;
+    color:#ffffff;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
 
-        .profile-card {
-            background: #fff;
-            display: flex;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            width: 400px;
-        }
+.app{
+    width:95%;
+    max-width:900px;
+}
 
-        .left {
-            width: 50%;
-            text-align: center;
-            padding: 20px;
-        }
+.card-main{
+    background:#111a2e;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.6);
+}
 
-        .left img {
-            width: 80px;
-            border-radius: 50%;
-            margin-bottom: 10px;
-        }
+/* SEARCH */
+.search-box{
+    display:flex;
+    gap:10px;
+    background:#0f172a;
+    padding:10px;
+    border-radius:14px;
+    border:1px solid #1e293b;
+}
 
-        .left h5 {
-            margin: 5px 0;
-        }
+.search-box input{
+    flex:1;
+    border:none;
+    background:transparent;
+    color:white;
+    outline:none;
+}
 
-        .btn-custom {
-            display: block;
-            width: 100%;
-            margin-top: 8px;
-            border-radius: 8px;
-        }
+/* BUTTON THEME */
+.btn-theme{
+    background:#4f8cff;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:10px 16px;
+}
 
-        .right {
-            width: 50%;
-            background: #f5f5f5;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-        }
+.btn-theme:hover{
+    background:#3b73d9;
+}
 
-        .right div {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:15px;
+    margin-top:20px;
+}
 
-        .right div:last-child {
-            border-bottom: none;
-        }
-    </style>
+.box{
+    background:#0f172a;
+    border-radius:14px;
+    padding:18px;
+    border:1px solid #1e293b;
+}
+
+/* PROFILE */
+.profile{
+    display:flex;
+    gap:15px;
+    align-items:center;
+}
+
+.profile img{
+    width:85px;
+    height:85px;
+    border-radius:50%;
+    border:2px solid #4f8cff;
+}
+
+/* STATS */
+.stats{
+    display:flex;
+    justify-content:space-between;
+    text-align:center;
+}
+
+.stats h4{
+    margin:0;
+    color:#4f8cff;
+}
+
+small{
+    color:#cbd5e1;
+}
+
+/* VIEW PROFILE BUTTON */
+.view-btn{
+    display:inline-block;
+    margin-top:12px;
+    padding:8px 14px;
+    background:#4f8cff;
+    color:white;
+    border-radius:10px;
+    text-decoration:none;
+    font-size:14px;
+}
+
+.view-btn:hover{
+    background:#3b73d9;
+}
+
+/* RESUME */
+.resume{
+    margin-top:20px;
+    background:#0f172a;
+    border-radius:14px;
+    padding:20px;
+    border:1px solid #1e293b;
+}
+
+.resume-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.resume-section{
+    background:#111a2e;
+    padding:12px;
+    border-radius:10px;
+}
+
+hr{
+    border-color:#1e293b;
+}
+
+/* PRINT ONLY RESUME */
+@media print {
+
+    body * {
+        visibility: hidden;
+    }
+
+    #resume, #resume * {
+        visibility: visible;
+    }
+
+    #resume {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    .btn-theme, .view-btn {
+        display: none !important;
+    }
+}
+
+</style>
+
 </head>
 
 <body>
-<h2 class="main-title text-center">GitHub Profile Finder</h2>
-<div class="card-container">
 
-    <!-- Search -->
-    <input type="text" id="username" class="form-control mb-3" placeholder="Enter username">
-    <button class="btn btn-dark w-100 mb-3" onclick="getProfile()">Search</button>
+<div class="app">
 
-    <!-- Card -->
+<h2 style="
+    text-align:center;
+    margin-bottom:20px;
+    font-weight:600;
+    color:#4f8cff;
+    letter-spacing:0.5px;
+">
+    GitHub Profile Analyzer & Resume Builder
+</h2>
+
+<p style="
+    text-align:center;
+    margin-top:-10px;
+    margin-bottom:20px;
+    color:#cbd5e1;
+    font-size:14px;
+">
+    Analyze GitHub profiles and generate AI-powered developer resumes instantly
+</p>
+
+<div class="card-main">
+
+    <!-- SEARCH -->
+    <div class="search-box">
+
+        <input type="text" id="username" placeholder="Search GitHub username...">
+
+        <button class="btn-theme" onclick="getProfile()">
+            Search
+        </button>
+
+    </div>
+
+    <!-- ERROR -->
+    <div id="error" class="alert alert-danger d-none mt-3"></div>
+
+    <!-- PROFILE -->
     <div id="profile"></div>
+
+    <!-- RESUME BUTTON -->
+    <div id="resumeBtnBox"></div>
+
+</div>
 
 </div>
 
